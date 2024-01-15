@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import json
 import os
@@ -81,7 +82,6 @@ def crawl_data(query_str, open_browser):
     """
     with Chrome(options=chrome_options) as browser:
         provinces_cities = get_provinces_cities()
-        print(provinces_cities)
         for province, cities in provinces_cities.items():
             for city in cities:
                 # if data exists, do not crawled again
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-q",
         "--query_strs",
-        default=["大学"],
+        default=["大学", "高铁站"],
     )
 
     parser.add_argument("--open_browser", default=False, action="store_true")
