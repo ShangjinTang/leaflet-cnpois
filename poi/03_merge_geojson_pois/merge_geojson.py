@@ -17,6 +17,9 @@ def main(args):
             data = json.load(f)
 
         features = data["features"]
+        for feature in features:
+            feature["properties"]["province"] = file_path.parents[1].name
+            feature["properties"]["city"] = file_path.parents[0].name
 
         merged_features.extend(features)
 
