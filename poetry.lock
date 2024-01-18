@@ -239,6 +239,16 @@ files = [
 test = ["pytest (>=6)"]
 
 [[package]]
+name = "geohash-tools"
+version = "0.2.0"
+description = "Geohash tools for performing geohash related tasks."
+optional = false
+python-versions = "*"
+files = [
+    {file = "geohash_tools-0.2.0.tar.gz", hash = "sha256:ee39f0bd950a0cdae027f0c08c7e22ba6ecb088a4cab8f2c9c50e6edf8992542"},
+]
+
+[[package]]
 name = "greenlet"
 version = "3.0.3"
 description = "Lightweight in-process concurrent programming"
@@ -654,4 +664,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ba63a303621b333d3a130919fc295cd8b2dcf7ea4e744c54373174d66c8cea6a"
+content-hash = "e3e3038b4f1d805b733d7a6d286d4babe219ac34e6cc43f8c09753c79af9863e"

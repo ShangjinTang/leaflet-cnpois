@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-##
-# @description This is only for baidu crawled data.
-##
-
 import argparse
 import json
 import os
