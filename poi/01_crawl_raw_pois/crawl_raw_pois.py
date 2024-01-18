@@ -72,7 +72,7 @@ def get_provinces_cities():
     return provinces_cities
 
 
-def crawl_data(query_str, open_browser):
+def crawl_data(query_str, open_browser, output_dir):
     chrome_options = ChromeOptions()  # 创建浏览器参数设置的对象
     if not open_browser:
         chrome_options.add_argument("--headless")  # 设置参数--headless，运行时不会弹出浏览器
@@ -84,9 +84,6 @@ def crawl_data(query_str, open_browser):
         provinces_cities = get_provinces_cities()
         for province, cities in provinces_cities.items():
             for city in cities:
-                # if data exists, do not crawled again
-                current_directory = Path().resolve()
-                output_dir = current_directory.joinpath("output")
                 city_path = output_dir / province / city
                 if Path.exists(city_path / f"{query_str}.json"):
                     continue
@@ -140,14 +137,18 @@ def crawl_data(query_str, open_browser):
 
 def main(args):
     for query_str in args.query_strs:
-        crawl_data(query_str, args.open_browser)
+        crawl_data(query_str, args.open_browser, args.output_dir)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-i", "--input_file", type=str, help="Input file")
-    parser.add_argument("-o", "--output_file", type=str, help="Output file")
+    parser.add_argument(
+        "-o",
+        "--output_dir",
+        default=Path(__file__).resolve().parent / "../output/crawled_raw_pois",
+        help="output directory",
+    )
 
     parser.add_argument(
         "-q",

@@ -34,7 +34,10 @@ for merge_data_type in merge_data_types:
                         item.append(city)  # 添加城市信息
                     all_data.extend(json_data)  # 将数据合并到列表中
 
-    df = pd.DataFrame(all_data, columns=["搜索关键字", "名称", "地址", "坐标", "省份", "城市"])
+    df = pd.DataFrame(
+        all_data,
+        columns=["category", "name", "address", "coordinate", "province", "city"],
+    )
 
     output_excel = "output/merged.xlsx"
     output_csv = "output/merged.csv"
