@@ -32,7 +32,11 @@ def main(args):
 
             feature = {
                 "type": "Feature",
-                "properties": {"name": name, "address": address},
+                "properties": {
+                    "name": name,
+                    "address": address,
+                    "tag": Path(input_json_path).stem,
+                },
                 "geometry": {"type": "Point", "coordinates": [wgs84_lng, wgs84_lat]},
             }
 
