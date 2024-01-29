@@ -20,8 +20,8 @@ public class GeoSqliteDbUtils {
         try {
             copyDatabaseFromAssets(context, sqliteFileName);
             SQLiteOpenHelper dbHelper = new AoiSQLiteOpenHelper(context, sqliteFileName);
-            GeometryParser geometryParser = new GeometryParser(dbHelper);
-            return geometryParser.parseGeometryCollectionFromDatabase(tableName);
+            SQLiteGeometryParser SQLiteGeometryParser = new SQLiteGeometryParser(dbHelper);
+            return SQLiteGeometryParser.parseGeometryCollectionFromDatabase(tableName);
         } catch (IOException e) {
             e.printStackTrace();
         }
