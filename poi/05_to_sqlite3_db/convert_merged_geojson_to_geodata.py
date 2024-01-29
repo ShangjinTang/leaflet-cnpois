@@ -32,8 +32,9 @@ def main(args):
         city = Column(String())
         address = Column(String())
         tag = Column(String())
-        longitude = Column(Float)
-        latitude = Column(Float)
+        # longitude = Column(Float)
+        # latitude = Column(Float)
+        coordinate = Column(String())
         geohash = Column(String())
 
     Base.metadata.create_all(engine)
@@ -51,8 +52,9 @@ def main(args):
             city=feature["properties"]["city"],
             address=feature["properties"]["address"],
             tag=feature["properties"]["tag"],
-            longitude=feature["geometry"]["coordinates"][0],
-            latitude=feature["geometry"]["coordinates"][1],
+            # longitude=feature["geometry"]["coordinates"][0],
+            # latitude=feature["geometry"]["coordinates"][1],
+            coordinate=str(feature["geometry"]["coordinates"]),
             geohash=feature["properties"]["geohash"],
         )
 
@@ -77,13 +79,13 @@ if __name__ == "__main__":
         "-o",
         "--output_file",
         default=Path(__file__).resolve().parent
-        / "../output/sqlite3_pois/pois_with_geohash.db",
+        / "../output/sqlite3_pois/pois_with_geohash.sqlite",
         help="output sqlite3 database file path",
     )
 
     parser.add_argument(
         "--table_name",
-        default="geodata",
+        default="pois_cn_all",
         help="table name in output sqlite3 database",
     )
 
