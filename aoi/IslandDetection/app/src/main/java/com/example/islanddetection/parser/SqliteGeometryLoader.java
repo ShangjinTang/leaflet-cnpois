@@ -1,4 +1,4 @@
-package com.example.islanddetection;
+package com.example.islanddetection.parser;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -14,14 +14,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-public class GeoSqliteDbUtils {
+public class SqliteGeometryLoader {
 
     public static GeometryCollection loadGeometryCollectionFromSqlite(Context context, String sqliteFileName, String tableName) {
         try {
             copyDatabaseFromAssets(context, sqliteFileName);
             SQLiteOpenHelper dbHelper = new AoiSQLiteOpenHelper(context, sqliteFileName);
-            SQLiteGeometryParser SQLiteGeometryParser = new SQLiteGeometryParser(dbHelper);
-            return SQLiteGeometryParser.parseGeometryCollectionFromDatabase(tableName);
+            SqliteGeometryConverter SqliteGeometryConverter = new SqliteGeometryConverter(dbHelper);
+            return SqliteGeometryConverter.parseGeometryCollectionFromDatabase(tableName);
         } catch (IOException e) {
             e.printStackTrace();
         }

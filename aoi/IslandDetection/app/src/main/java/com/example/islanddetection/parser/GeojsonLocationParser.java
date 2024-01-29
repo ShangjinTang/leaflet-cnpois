@@ -1,4 +1,4 @@
-package com.example.islanddetection;
+package com.example.islanddetection.parser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +13,7 @@ import org.locationtech.jts.geom.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationParser {
+public class GeojsonLocationParser {
     public static List<Coordinate> parseCoordinates(JSONArray coordinateArray) throws JSONException {
         List<Coordinate> coordinateList = new ArrayList<>();
 
@@ -62,9 +62,9 @@ public class LocationParser {
         JSONArray coordinatesArray = geometryObject.getJSONArray("coordinates").getJSONArray(0);
 
         if (type.equalsIgnoreCase("Polygon")) {
-            return LocationParser.parsePolygon(coordinatesArray, geometryFactory);
+            return GeojsonLocationParser.parsePolygon(coordinatesArray, geometryFactory);
         } else if (type.equalsIgnoreCase("MultiPolygon")) {
-            return LocationParser.parseMultiPolygon(coordinatesArray, geometryFactory);
+            return GeojsonLocationParser.parseMultiPolygon(coordinatesArray, geometryFactory);
         }
 
         throw new JSONException("Unsupported geometry type: " + type);

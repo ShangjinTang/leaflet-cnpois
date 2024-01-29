@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.islanddetection.parser.GeojsonGeometryLoader;
+import com.example.islanddetection.parser.SqliteGeometryLoader;
+
 public class MainActivity extends AppCompatActivity {
     public Context context;
     private static final String TAG = "MainActivity";
@@ -38,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
                 Coordinate coordinate = new Coordinate(longitude, latitude);
                 TextView resultText = findViewById(R.id.resultTextView);
 
-                GeometryCollection geometryCollectionFromGeojson = GeoJsonUtils.loadGeometryCollectionFromGeoJson(context, geoJsonFileName);
+                GeometryCollection geometryCollectionFromGeojson = GeojsonGeometryLoader.loadGeometryCollectionFromGeoJson(context, geoJsonFileName);
                 if (geometryCollectionFromGeojson != null) {
                     Log.d(TAG, "geometryCollectionFromGeojson: " + geometryCollectionFromGeojson.toString());
                     boolean isInsideAnyGeojsonPolygon = MapUtils.isInsideAnyPolygon(coordinate, geometryCollectionFromGeojson);
                     Log.v(TAG, "isInsideAnyPolygon: " + isInsideAnyGeojsonPolygon);
                 }
 
-                GeometryCollection geometryCollectionFromSqlite = GeoSqliteDbUtils.loadGeometryCollectionFromSqlite(context, geoSqliteDbFileName, geoSqliteDbTableName);
+                GeometryCollection geometryCollectionFromSqlite = SqliteGeometryLoader.loadGeometryCollectionFromSqlite(context, geoSqliteDbFileName, geoSqliteDbTableName);
                 if (geometryCollectionFromSqlite != null) {
                     Log.d(TAG, "geometryCollectionFromSqlite: " + geometryCollectionFromSqlite.toString());
                     boolean isInsideAnySqlitePolygon = MapUtils.isInsideAnyPolygon(coordinate, geometryCollectionFromSqlite);

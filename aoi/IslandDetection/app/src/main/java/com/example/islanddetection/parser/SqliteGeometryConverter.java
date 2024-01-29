@@ -1,9 +1,11 @@
-package com.example.islanddetection;
+package com.example.islanddetection.parser;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteException;
+
+import com.example.islanddetection.parser.GeojsonLocationParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SQLiteGeometryParser {
+public class SqliteGeometryConverter {
     private SQLiteOpenHelper dbHelper;
 
-    public SQLiteGeometryParser(SQLiteOpenHelper dbHelper) {
+    public SqliteGeometryConverter(SQLiteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
     }
 
@@ -37,7 +39,7 @@ public class SQLiteGeometryParser {
                         String polygonString = cursor.getString(columnIndex);
                         JSONArray coordinatesArray = new JSONArray(polygonString);
                         GeometryFactory geometryFactory = new GeometryFactory();
-                        Geometry geometry = LocationParser.parsePolygon(coordinatesArray, geometryFactory);
+                        Geometry geometry = GeojsonLocationParser.parsePolygon(coordinatesArray, geometryFactory);
                         geometries.add(geometry);
                     } else {
                         geometries.add(null);

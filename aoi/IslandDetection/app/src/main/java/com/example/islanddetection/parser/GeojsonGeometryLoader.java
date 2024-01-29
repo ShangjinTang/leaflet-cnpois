@@ -1,7 +1,9 @@
-package com.example.islanddetection;
+package com.example.islanddetection.parser;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+
+import com.example.islanddetection.parser.GeojsonLocationParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeoJsonUtils {
+public class GeojsonGeometryLoader {
     public static GeometryCollection loadGeometryCollectionFromGeoJson(Context context, String geoJsonFileName) {
         try {
             String geoJson = readGeoJsonFromAssets(context, geoJsonFileName);
@@ -30,7 +32,7 @@ public class GeoJsonUtils {
             for (int i = 0; i < featuresArray.length(); i++) {
                 JSONObject featureObject = featuresArray.getJSONObject(i);
                 JSONObject geometryObject = featureObject.getJSONObject("geometry");
-                Geometry geometry = LocationParser.parseGeometry(geometryObject, geometryFactory);
+                Geometry geometry = GeojsonLocationParser.parseGeometry(geometryObject, geometryFactory);
                 geometryList.add(geometry);
             }
             GeometryCollection geometryCollection = new GeometryCollection(geometryList.toArray(new Geometry[0]), geometryFactory);
