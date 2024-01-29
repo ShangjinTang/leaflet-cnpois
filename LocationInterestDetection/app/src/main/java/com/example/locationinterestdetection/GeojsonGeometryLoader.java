@@ -1,4 +1,4 @@
-package com.example.locationinterestdetection.parser;
+package com.example.locationinterestdetection;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeojsonGeometryLoader {
-    public static GeometryCollection loadGeometryCollectionFromGeoJson(Context context, String geoJsonFileName) {
+    public static GeometryCollection loadGeometryCollectionFromGeojson(Context context, String geoJsonFileName) {
         try {
             String geoJson = readGeoJsonFromAssets(context, geoJsonFileName);
 

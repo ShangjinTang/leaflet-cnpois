@@ -13,15 +13,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.locationinterestdetection.parser.GeojsonGeometryLoader;
-import com.example.locationinterestdetection.parser.SqliteGeometryLoader;
-
 public class MainActivity extends AppCompatActivity {
     public Context context;
     private static final String TAG = "MainActivity";
-    private String geoJsonFileName = "example_aois.geojson";
+    private String aoisGeojson = "example_aois.geojson";
+    private String poisGeojson = "example_pois.geojson";
     private String geoSqliteDbFileName = "example.sqlite";
-    private String geoSqliteDbTableName = "geodata_aois";
+    private String poisTable = "pois_example";
+    private String aoisTable = "aois_example";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,31 +40,38 @@ public class MainActivity extends AppCompatActivity {
                 Coordinate coordinate = new Coordinate(longitude, latitude);
                 TextView resultText = findViewById(R.id.resultTextView);
 
-                GeometryCollection aoiGeometryCollectionFromGeojson = GeojsonGeometryLoader.loadGeometryCollectionFromGeoJson(context, geoJsonFileName);
-                if (aoiGeometryCollectionFromGeojson != null) {
-                    Log.d(TAG, "geometryCollectionFromGeojson: " + aoiGeometryCollectionFromGeojson.toString());
-                    boolean isInsideAnyGeojsonPolygon = MapUtils.isInsideAnyPolygon(coordinate, aoiGeometryCollectionFromGeojson);
-                    Log.v(TAG, "isInsideAnyPolygon: " + isInsideAnyGeojsonPolygon);
-                }
+//                GeometryCollection aoiGeometryCollectionFromGeojson = GeojsonGeometryLoader.loadGeometryCollectionFromGeojson(context, aoisGeojson);
+//                if (aoiGeometryCollectionFromGeojson != null) {
+//                    Log.d(TAG, "aoiGeometryCollectionFromGeojson: " + aoiGeometryCollectionFromGeojson.toString());
+//                    boolean isInsideAnyGeojsonPolygon = MapUtils.isInsideAnyPolygon(coordinate, aoiGeometryCollectionFromGeojson);
+//                    Log.v(TAG, "isInsideAnyPolygon: " + isInsideAnyGeojsonPolygon);
+//                }
 
-                GeometryCollection aoiGeoCollectionFromSqlite = SqliteGeometryLoader.loadGeometryCollectionFromSqlite(context, geoSqliteDbFileName, geoSqliteDbTableName);
+
+//                GeometryCollection poiGeoCollectionsFromGeojson = GeojsonGeometryLoader.loadGeometryCollectionFromGeojson(context, poisGeojson);
+//                if (poiGeoCollectionsFromGeojson != null) {
+//                    Log.d(TAG, "poiGeoCollectionsFromGeojson: " + poiGeoCollectionsFromGeojson.toString());
+//                }
+
+                GeometryCollection aoiGeoCollectionFromSqlite = SqliteGeometryLoader.loadPolygonsFromSqlite(context, geoSqliteDbFileName, aoisTable);
                 if (aoiGeoCollectionFromSqlite != null) {
-                    Log.d(TAG, "geometryCollectionFromSqlite: " + aoiGeoCollectionFromSqlite.toString());
+                    Log.d(TAG, "aoiGeoCollectionFromSqlite: " + aoiGeoCollectionFromSqlite.toString());
                     boolean isInsideAnySqlitePolygon = MapUtils.isInsideAnyPolygon(coordinate, aoiGeoCollectionFromSqlite);
                     Log.v(TAG, "isInsideAnyPolygon: " + isInsideAnySqlitePolygon);
+                    if (isInsideAnySqlitePolygon) {
+                        resultText.setText("Inside any polygons: TRUE");
+                    } else {
+                        resultText.setText("Inside any polygons: FALSE");
+                    }
                 }
 
-                // For POI
-                GeometryCollection poiGeoCollections = GeojsonGeometryLoader.loadGeometryCollectionFromGeoJson(context, "example_pois.geojson");
-                if (poiGeoCollections != null) {
-                    Log.d(TAG, "poiGeoCollections: " + poiGeoCollections.toString());
+                // POI search nearest coordinate
+                GeometryCollection poiGeoCollectionFromSqlite = SqliteGeometryLoader.loadCoordinatesFromSqlite(context, geoSqliteDbFileName, poisTable);
+                if (poiGeoCollectionFromSqlite != null) {
+                    Log.d(TAG, "poiGeoCollectionFromSqlite: " + poiGeoCollectionFromSqlite.toString());
+                    Coordinate nearestCoordinate = MapUtils.getNearestCoordinate(coordinate, poiGeoCollectionFromSqlite);
+                    Log.d(TAG, "nearestCoordinate: " + nearestCoordinate.toString());
                 }
-
-//                if (isInsideAnyPolygon) {
-//                    resultText.setText("Inside any polygons: true");
-//                } else {
-//                    resultText.setText("Inside any polygons: false");
-//                }
             }
         });
 

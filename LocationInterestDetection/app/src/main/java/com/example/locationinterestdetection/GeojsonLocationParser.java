@@ -1,4 +1,4 @@
-package com.example.locationinterestdetection.parser;
+package com.example.locationinterestdetection;
 
 import org.json.JSONArray;
 import org.json.JSONException;

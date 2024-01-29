@@ -1,4 +1,4 @@
-package com.example.locationinterestdetection.parser;
+package com.example.locationinterestdetection;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -15,13 +15,20 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 public class SqliteGeometryLoader {
+    public static GeometryCollection loadPolygonsFromSqlite(Context context, String sqliteFileName, String tableName) {
+        return loadGeometryCollectionFromSqlite(context, sqliteFileName, tableName, "polygon");
+    }
 
-    public static GeometryCollection loadGeometryCollectionFromSqlite(Context context, String sqliteFileName, String tableName) {
+    public static GeometryCollection loadCoordinatesFromSqlite(Context context, String sqliteFileName, String tableName) {
+        return loadGeometryCollectionFromSqlite(context, sqliteFileName, tableName, "coordinate");
+    }
+
+    private static GeometryCollection loadGeometryCollectionFromSqlite(Context context, String sqliteFileName, String tableName, String columnName) {
         try {
             copyDatabaseFromAssets(context, sqliteFileName);
             SQLiteOpenHelper dbHelper = new AoiSQLiteOpenHelper(context, sqliteFileName);
             SqliteGeometryConverter SqliteGeometryConverter = new SqliteGeometryConverter(dbHelper);
-            return SqliteGeometryConverter.parseGeometryCollectionFromDatabase(tableName);
+            return SqliteGeometryConverter.parseGeometryCollectionFromDatabase(tableName, columnName);
         } catch (IOException e) {
             e.printStackTrace();
         }
