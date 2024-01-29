@@ -1,4 +1,4 @@
-package com.example.islanddetection;
+package com.example.locationinterestdetection;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;

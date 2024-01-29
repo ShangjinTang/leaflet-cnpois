@@ -1,4 +1,4 @@
-package com.example.islanddetection;
+package com.example.locationinterestdetection;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.islanddetection.parser.GeojsonGeometryLoader;
-import com.example.islanddetection.parser.SqliteGeometryLoader;
+import com.example.locationinterestdetection.parser.GeojsonGeometryLoader;
+import com.example.locationinterestdetection.parser.SqliteGeometryLoader;
 
 public class MainActivity extends AppCompatActivity {
     public Context context;
@@ -41,18 +41,24 @@ public class MainActivity extends AppCompatActivity {
                 Coordinate coordinate = new Coordinate(longitude, latitude);
                 TextView resultText = findViewById(R.id.resultTextView);
 
-                GeometryCollection geometryCollectionFromGeojson = GeojsonGeometryLoader.loadGeometryCollectionFromGeoJson(context, geoJsonFileName);
-                if (geometryCollectionFromGeojson != null) {
-                    Log.d(TAG, "geometryCollectionFromGeojson: " + geometryCollectionFromGeojson.toString());
-                    boolean isInsideAnyGeojsonPolygon = MapUtils.isInsideAnyPolygon(coordinate, geometryCollectionFromGeojson);
+                GeometryCollection aoiGeometryCollectionFromGeojson = GeojsonGeometryLoader.loadGeometryCollectionFromGeoJson(context, geoJsonFileName);
+                if (aoiGeometryCollectionFromGeojson != null) {
+                    Log.d(TAG, "geometryCollectionFromGeojson: " + aoiGeometryCollectionFromGeojson.toString());
+                    boolean isInsideAnyGeojsonPolygon = MapUtils.isInsideAnyPolygon(coordinate, aoiGeometryCollectionFromGeojson);
                     Log.v(TAG, "isInsideAnyPolygon: " + isInsideAnyGeojsonPolygon);
                 }
 
-                GeometryCollection geometryCollectionFromSqlite = SqliteGeometryLoader.loadGeometryCollectionFromSqlite(context, geoSqliteDbFileName, geoSqliteDbTableName);
-                if (geometryCollectionFromSqlite != null) {
-                    Log.d(TAG, "geometryCollectionFromSqlite: " + geometryCollectionFromSqlite.toString());
-                    boolean isInsideAnySqlitePolygon = MapUtils.isInsideAnyPolygon(coordinate, geometryCollectionFromSqlite);
+                GeometryCollection aoiGeoCollectionFromSqlite = SqliteGeometryLoader.loadGeometryCollectionFromSqlite(context, geoSqliteDbFileName, geoSqliteDbTableName);
+                if (aoiGeoCollectionFromSqlite != null) {
+                    Log.d(TAG, "geometryCollectionFromSqlite: " + aoiGeoCollectionFromSqlite.toString());
+                    boolean isInsideAnySqlitePolygon = MapUtils.isInsideAnyPolygon(coordinate, aoiGeoCollectionFromSqlite);
                     Log.v(TAG, "isInsideAnyPolygon: " + isInsideAnySqlitePolygon);
+                }
+
+                // For POI
+                GeometryCollection poiGeoCollections = GeojsonGeometryLoader.loadGeometryCollectionFromGeoJson(context, "example_pois.geojson");
+                if (poiGeoCollections != null) {
+                    Log.d(TAG, "poiGeoCollections: " + poiGeoCollections.toString());
                 }
 
 //                if (isInsideAnyPolygon) {

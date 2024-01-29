@@ -1,11 +1,9 @@
-package com.example.islanddetection.parser;
+package com.example.locationinterestdetection.parser;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteException;
-
-import com.example.islanddetection.parser.GeojsonLocationParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

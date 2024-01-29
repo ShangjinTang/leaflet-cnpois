@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.islanddetection'
+    namespace 'com.example.locationinterestdetection'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.islanddetection"
+        applicationId "com.example.locationinterestdetection"
         minSdk 33
         targetSdk 34
         versionCode 1

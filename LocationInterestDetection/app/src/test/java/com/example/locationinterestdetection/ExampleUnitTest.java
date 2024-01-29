@@ -1,4 +1,4 @@
-package com.example.islanddetection;
+package com.example.locationinterestdetection;
 
 import org.junit.Test;
 

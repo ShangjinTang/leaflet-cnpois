@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "IslandDetection"
+rootProject.name = "LocationInterestDetection"
 include ':app'

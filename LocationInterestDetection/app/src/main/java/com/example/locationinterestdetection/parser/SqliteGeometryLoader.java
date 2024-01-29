@@ -1,4 +1,4 @@
-package com.example.islanddetection.parser;
+package com.example.locationinterestdetection.parser;
 
 import android.content.Context;
 import android.content.res.AssetManager;

@@ -1,9 +1,7 @@
-package com.example.islanddetection.parser;
+package com.example.locationinterestdetection.parser;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-
-import com.example.islanddetection.parser.GeojsonLocationParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
