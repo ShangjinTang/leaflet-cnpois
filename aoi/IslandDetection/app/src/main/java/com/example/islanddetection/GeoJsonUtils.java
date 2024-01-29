@@ -21,25 +21,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeoJsonUtils {
-    public static GeometryCollection loadGeometryCollectionFromGeoJson(Context context, String geoJsonFileName) throws IOException, JSONException {
-        String geoJson = readGeoJsonFromAssets(context, geoJsonFileName);
+    public static GeometryCollection loadGeometryCollectionFromGeoJson(Context context, String geoJsonFileName) {
+        try {
+            String geoJson = readGeoJsonFromAssets(context, geoJsonFileName);
 
-        JSONObject geoJsonObject = new JSONObject(geoJson);
-        JSONArray featuresArray = geoJsonObject.getJSONArray("features");
+            JSONObject geoJsonObject = new JSONObject(geoJson);
+            JSONArray featuresArray = geoJsonObject.getJSONArray("features");
 
-        GeometryFactory geometryFactory = new GeometryFactory();
+            GeometryFactory geometryFactory = new GeometryFactory();
 
-        List<Geometry> geometryList = new ArrayList<>();
-        for (int i = 0; i < featuresArray.length(); i++) {
-            JSONObject featureObject = featuresArray.getJSONObject(i);
-            JSONObject geometryObject = featureObject.getJSONObject("geometry");
-            Geometry geometry = parseGeometry(geometryObject, geometryFactory);
-            geometryList.add(geometry);
+            List<Geometry> geometryList = new ArrayList<>();
+            for (int i = 0; i < featuresArray.length(); i++) {
+                JSONObject featureObject = featuresArray.getJSONObject(i);
+                JSONObject geometryObject = featureObject.getJSONObject("geometry");
+                Geometry geometry = parseGeometry(geometryObject, geometryFactory);
+                geometryList.add(geometry);
+
+                GeometryCollection geometryCollection = new GeometryCollection(geometryList.toArray(new Geometry[0]), geometryFactory);
+
+                return geometryCollection;
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
         }
-
-        GeometryCollection geometryCollection = new GeometryCollection(geometryList.toArray(new Geometry[0]), geometryFactory);
-
-        return geometryCollection;
+        return null;
     }
 
     private static String readGeoJsonFromAssets(Context context, String fileName) throws IOException {

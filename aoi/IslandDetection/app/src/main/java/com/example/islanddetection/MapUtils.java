@@ -6,7 +6,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 
 public class MapUtils {
-    public static boolean isInsideAnyPolygon(GeometryCollection geometryCollection, Coordinate coordinate) {
+    public static boolean isInsideAnyPolygon(Coordinate coordinate, GeometryCollection geometryCollection) {
 
         Point point = new GeometryFactory().createPoint(coordinate);
 
