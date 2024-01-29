@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import argparse
 import json
 import os
@@ -16,12 +17,12 @@ from selenium.webdriver.common.by import By
 
 
 def get_provinces_cities():
-    url = "http://api.map.baidu.com/lbsapi/getpoint/index.html"
-    response = requests.get(url)
+    # 从 url 获取省市信息
+    response = requests.get("http://api.map.baidu.com/lbsapi/getpoint/index.html")
     html_content = response.content.decode("utf-8")
     soup = BeautifulSoup(html_content, "html.parser")
     provinces_cities = {}
-    # Extract province and city information
+    # 省市信息包含在 <tr></tr> 中
     rows = soup.find_all("tr")
 
     # 直辖市 (municipality)
@@ -35,6 +36,7 @@ def get_provinces_cities():
                 provinces_cities.update({municipality_city: [municipality_city]})
 
     # 非直辖市
+    # 由于百度地图问题，以下地区无法点击，因此无法爬取
     CANNOT_CLICKED_CITIES = {
         "神农架林区",
         "襄樊",
@@ -73,13 +75,9 @@ def get_provinces_cities():
 
 
 def crawl_data(query_str, open_browser, output_dir):
-    chrome_options = ChromeOptions()  # 创建浏览器参数设置的对象
+    chrome_options = ChromeOptions()
     if not open_browser:
-        chrome_options.add_argument("--headless")  # 设置参数--headless，运行时不会弹出浏览器
-    """
-    将参数设置对象传递给浏览器驱动类的构造方法的默认参数options，实例化一个浏览器驱动对象
-    with关键字用来确保不管程序是不是有问题，每次都能关闭浏览器和浏览器驱动程序
-    """
+        chrome_options.add_argument("--headless")
     with Chrome(options=chrome_options) as browser:
         provinces_cities = get_provinces_cities()
         for province, cities in provinces_cities.items():
@@ -90,30 +88,26 @@ def crawl_data(query_str, open_browser, output_dir):
                 if not Path.exists(city_path):
                     Path.mkdir(city_path, parents=True)
 
-                browser.get(
-                    "http://api.map.baidu.com/lbsapi/getpoint/index.html"
-                )  # 发送请求
-                browser.find_element(by=By.ID, value="curCityText").click()  # 找到更换城市并点击
-                time.sleep(random.random() + 1)  # 等待一段时间
-                browser.find_element(by=By.LINK_TEXT, value=city).click()  # 找到城市并点击
-                time.sleep(random.random() + 1)  # 等待一段时间
-                browser.find_element(by=By.ID, value="localvalue").send_keys(
-                    query_str
-                )  # 找到输入框，输入关键字公司
-                browser.find_element(
-                    by=By.ID, value="localsearch"
-                ).click()  # 点击百度一下进行搜索
+                browser.get("http://api.map.baidu.com/lbsapi/getpoint/index.html")
+                browser.find_element(by=By.ID, value="curCityText").click()
+                time.sleep(random.random() + 1)
+                browser.find_element(by=By.LINK_TEXT, value=city).click()
+                time.sleep(random.random() + 1)
+                # 找到输入框，输入关键字
+                browser.find_element(by=By.ID, value="localvalue").send_keys(query_str)
+                # 搜索输入的关键字
+                browser.find_element(by=By.ID, value="localsearch").click()
                 pattern = re.compile(
                     r'<div id="no_\d".*?>\s+<a href="javascript:void\(0\)" title="(.*?)">.*?</a>\s+<p>地址：(.*?)\s+'
                     r".*?坐标：(.*?)\s+</p>",
                     re.S,
-                )  # 正则表达式
+                )
 
-                time.sleep(random.random() + 1)  # 等待一段时间
+                time.sleep(random.random() + 1)
                 result_list = []
                 result_list.extend(pattern.findall(browser.page_source))
 
-                # 一直点击下一页，直到找不到下一页为止
+                # 一直点击“下一页”，直到找不到“下一页”为止
                 while True:
                     try:
                         browser.find_element(
@@ -125,14 +119,14 @@ def crawl_data(query_str, open_browser, output_dir):
                         break
                 json_data = json.dumps(result_list, ensure_ascii=False)
 
+                # 保存数据
                 with open(
                     city_path / f"{query_str}.json",
                     "w",
                     encoding="utf-8",
                 ) as f:
                     f.write(json_data)
-
-                print(f"Crawled: {province}/{city}/{query_str}.json")
+                    print(f"Crawled: {province}/{city}/{query_str}.json")
 
 
 def main(args):
@@ -157,14 +151,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument("--open_browser", default=False, action="store_true")
-
-    # You can use mutex groups for conflicted commands
-    # group = parser.add_mutually_exclusive_group()
-    # group.add_argument('--foo', action='store_true')
-    # group.add_argument('--bar', action='store_false')
-
-    # You can use subparsers for complex commands
-    # subparsers = parser.add_subparsers(title="subcommands")
 
     try:
         args = parser.parse_args()
