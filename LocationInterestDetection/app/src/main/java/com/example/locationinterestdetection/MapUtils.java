@@ -11,17 +11,10 @@ import org.locationtech.jts.geom.GeometryCollection;
 public class MapUtils {
     public static boolean isInsideAnyPolygon(Coordinate coordinate, GeometryCollection geometryCollection) {
         Point point = new GeometryFactory().createPoint(coordinate);
-        long startTime = System.currentTimeMillis();
         for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
-            for (int j = 0; j < 10000; j++) {
-                Geometry geometry = geometryCollection.getGeometryN(i);
-                if (geometry.contains(point)) {
-                    if (j == 9999) {
-                        long endTime = System.currentTimeMillis();
-                        Log.i("xxx", "time collapse： " + (endTime - startTime) + "ms");
-                        return true;
-                    }
-                }
+            Geometry geometry = geometryCollection.getGeometryN(i);
+            if (geometry.contains(point)) {
+                return true;
             }
         }
         return false;
@@ -44,5 +37,20 @@ public class MapUtils {
         }
 
         return nearestCoordinate;
+    }
+
+    // Calculate distance of two geo points using Haversine Formula.
+    // Meter level is enough for current problem, so we do not use double here.
+    public static int calcHaversineDistanceInMeters(Coordinate coord1, Coordinate coord2) {
+        final int EARTH_RADIUS = 6371000;
+        double lat1 = Math.toRadians(coord1.getY());
+        double lat2 = Math.toRadians(coord2.getY());
+        double delta_lat = Math.toRadians(coord2.getY() - coord1.getY());
+        double delta_lng = Math.toRadians(coord2.getX() - coord1.getX());
+        double a = Math.sin(delta_lat / 2) * Math.sin(delta_lat / 2)
+                + Math.cos(lat1) * Math.cos(lat2) * Math.sin(delta_lng / 2) * Math.sin(delta_lng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = EARTH_RADIUS * c;
+        return (int) distance;
     }
 }

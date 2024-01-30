@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 EditText editLongitudeText = findViewById(R.id.editLongitude);
                 double latitude = Double.parseDouble(editLatitudeText.getText().toString());
                 double longitude = Double.parseDouble(editLongitudeText.getText().toString());
-                Coordinate coordinate = new Coordinate(longitude, latitude);
+                Coordinate inputCoordinate = new Coordinate(longitude, latitude);
                 TextView resultText = findViewById(R.id.resultTextView);
 
 //                GeometryCollection aoiGeometryCollectionFromGeojson = GeojsonGeometryLoader.loadGeometryCollectionFromGeojson(context, aoisGeojson);
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 GeometryCollection aoiGeoCollectionFromSqlite = SqliteGeometryLoader.loadPolygonsFromSqlite(context, geoSqliteDbFileName, aoisTable);
                 if (aoiGeoCollectionFromSqlite != null) {
                     Log.d(TAG, "aoiGeoCollectionFromSqlite: " + aoiGeoCollectionFromSqlite.toString());
-                    boolean isInsideAnySqlitePolygon = MapUtils.isInsideAnyPolygon(coordinate, aoiGeoCollectionFromSqlite);
+                    boolean isInsideAnySqlitePolygon = MapUtils.isInsideAnyPolygon(inputCoordinate, aoiGeoCollectionFromSqlite);
                     Log.v(TAG, "isInsideAnyPolygon: " + isInsideAnySqlitePolygon);
                     if (isInsideAnySqlitePolygon) {
                         resultText.setText("Inside any polygons: TRUE");
@@ -69,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
                 GeometryCollection poiGeoCollectionFromSqlite = SqliteGeometryLoader.loadCoordinatesFromSqlite(context, geoSqliteDbFileName, poisTable);
                 if (poiGeoCollectionFromSqlite != null) {
                     Log.d(TAG, "poiGeoCollectionFromSqlite: " + poiGeoCollectionFromSqlite.toString());
-                    Coordinate nearestCoordinate = MapUtils.getNearestCoordinate(coordinate, poiGeoCollectionFromSqlite);
+                    Coordinate nearestCoordinate = MapUtils.getNearestCoordinate(inputCoordinate, poiGeoCollectionFromSqlite);
                     Log.d(TAG, "nearestCoordinate: " + nearestCoordinate.toString());
+                    int distanceInMeters = MapUtils.calcHaversineDistanceInMeters(inputCoordinate, nearestCoordinate);
+                    Log.d(TAG, "distanceInKilometers to nearest poi: " + distanceInMeters + "m");
                 }
             }
         });
